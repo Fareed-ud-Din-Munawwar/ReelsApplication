@@ -14,7 +14,6 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
@@ -214,19 +213,24 @@ class ReelPlayer(
         })
     }
 
-    fun setData(reels: MutableList<ReelsData>) {
-        progressBarContainer.removeAllViews()
-        reels.mapIndexedTo(internalReels) { index, reel ->
+    fun setData(reels: List<ReelsData>) {
+        if (reels.isNotEmpty()) {
+            progressBarContainer.removeAllViews()
+            reels.mapIndexedTo(internalReels) { index, reel ->
 
-            // add progress bar to container and set max to duration (millis)
-            val progressBar = LayoutInflater.from(progressBarContainer.context).inflate(R.layout.progress_bar_item, progressBarContainer, false) as ProgressBar
-            progressBar.max = reel.duration.toInt()
-            progressBarContainer.addView(progressBar)
+                // add progress bar to container and set max to duration (millis)
+                val progressBar = LayoutInflater.from(progressBarContainer.context)
+                    .inflate(R.layout.progress_bar_item, progressBarContainer, false) as ProgressBar
+                progressBar.max = reel.duration.toInt()
+                progressBarContainer.addView(progressBar)
 
-            Reels(reel.url, reel.duration, progressBar, index)
+                Reels(reel.url, reel.duration, progressBar, index)
+            }
+            showReel(0)
+            onUpdateProgress(0)
         }
-        showReel(0)
-        onUpdateProgress(0)
+        else
+            release()
     }
 
     private fun showReel(index: Int) {
