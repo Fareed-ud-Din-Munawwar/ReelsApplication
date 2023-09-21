@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace 'com.example.reelsapplication'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.reelsapplication"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -52,24 +52,11 @@ dependencies {
 
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
 
-// for core support in exoplayer.
+    // for core support in exoplayer.
 
     implementation 'com.google.android.exoplayer:exoplayer-core:2.19.1'
 
-// for adding dash support in our exoplayer.
-
-    implementation 'com.google.android.exoplayer:exoplayer-dash:2.19.1'
-
-// for adding hls support in exoplayer.
-
-
-    implementation 'com.google.android.exoplayer:exoplayer-hls:2.19.1'
-
-// for smooth streaming of video in our exoplayer.
-
-    implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.19.1'
-
-// for generating default ui of exoplayer
+    // for generating default ui of exoplayer
 
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.19.1'
 
