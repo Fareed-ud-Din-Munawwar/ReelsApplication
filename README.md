@@ -13,6 +13,12 @@ This is an implementation of instagram-like stories. This project has two branch
   startActivity(intent)
 </code>
 
+<H2>Preview</H2>
+<video width="500" height="650" src="https://github.com/Fareed-ud-Din-Munawwar/ReelsApplication/assets/64327426/3f57b74f-1d1d-4e26-ab65-4eb4b7eadc4a" >
+</video>
+
+
+
 <H2>Screeenshots</H2>
 <img src="https://github.com/Fareed-ud-Din-Munawwar/ReelsApplication/assets/64327426/41c4f49e-19c9-4737-860e-12ee065960c3" width="300" height="700">
 <img src="https://github.com/Fareed-ud-Din-Munawwar/ReelsApplication/assets/64327426/d8bfa981-c4e3-4393-8797-98c142b4b61a" width="300" height="700">
