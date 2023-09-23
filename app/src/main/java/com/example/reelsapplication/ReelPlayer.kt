@@ -9,7 +9,6 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.reelsapplication.reels.ReelsData
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.source.MediaSource
