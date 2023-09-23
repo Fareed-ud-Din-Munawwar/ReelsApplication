@@ -16,19 +16,18 @@ import com.example.reelsapplication.dp
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 
-class ReelActivity1 : AppCompatActivity() {
+class ReelActivity : AppCompatActivity() {
 
     private lateinit var player: SimpleExoPlayer
     private lateinit var playerView: PlayerView
     private lateinit var segmentedVideoPlayer: ReelPlayer
     private lateinit var progressContainer: LinearLayoutCompat
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reel1)
+        setContentView(R.layout.activity_reel)
 
-        val reels = intent.getParcelableArrayListExtra("data", ReelsData::class.java)
+        val reels = intent.getStringArrayListExtra("data") ?: emptyList()
 
         progressContainer = findViewById(R.id.progress_container)
         playerView = findViewById(R.id.player_view)
@@ -37,7 +36,7 @@ class ReelActivity1 : AppCompatActivity() {
         segmentedVideoPlayer = ReelPlayer(player, playerView, progressContainer, autoPlay = true)
         updateProgress()
 
-        segmentedVideoPlayer.setData(reels?.toList() ?: emptyList())
+        segmentedVideoPlayer.setData(reels)
 
         segmentedVideoPlayer.closeObserver.observe(this){
             if (it)

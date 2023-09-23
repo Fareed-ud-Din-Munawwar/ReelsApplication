@@ -32,11 +32,9 @@ class ReelPlayer(
 
     private val dataSourceFactory: DataSource.Factory
     private val internalReels = mutableListOf<Reels>()
-    private var reelIndex = 0
+    private var reelIndex = DEFAULT_INDEX
 
     private val delayedPauseRunnable = Runnable { pause() }
-
-    var pauseDelay = 150L
 
     init {
         val context = playerView.context
@@ -70,7 +68,7 @@ class ReelPlayer(
 
                 if (motionEvent.action == MotionEvent.ACTION_DOWN) {
                     view.removeCallbacks(delayedPauseRunnable)
-                    view.postDelayed(delayedPauseRunnable, pauseDelay) // pause after pauseDelay
+                    view.postDelayed(delayedPauseRunnable, PAUSE_DELAY) // pause after pauseDelay
                 }
 
                 if (motionEvent.action == MotionEvent.ACTION_UP) {
@@ -81,7 +79,7 @@ class ReelPlayer(
                     val isInRewindArea =
                         motionEvent.x.toInt() in 0..center // touch is close to the left edge of the screen
 
-                    if (duration <= pauseDelay) {
+                    if (duration <= PAUSE_DELAY) {
                         if (isInRewindArea) rewind() else forward()
                     } else {
                         play()
@@ -126,9 +124,12 @@ class ReelPlayer(
 
         val segment = internalReels[reelIndex]
 
+        if (position == DEFAULT_INDEX.toLong())
+            segment.setMaxDuration(player.duration)
+
         segment.setProgress(position)
 
-        handler.postDelayed(updateProgressAction, 50L);
+        handler.postDelayed(updateProgressAction, PROGRESS_DELAY);
     }
 
     internal fun pause() {
@@ -156,15 +157,15 @@ class ReelPlayer(
     private fun rewind() {
         //play previous segment or repeat first segment
         internalReels[reelIndex].notStarted()
-        if (reelIndex > 0) {
+        if (reelIndex > DEFAULT_INDEX) {
             showReel(--reelIndex)
             internalReels[reelIndex].notStarted()
-            onUpdateProgress(0)
+            onUpdateProgress(DEFAULT_INDEX.toLong())
         }
-        else if (reelIndex == 0){
+        else if (reelIndex == DEFAULT_INDEX){
             showReel(reelIndex)
             internalReels[reelIndex].notStarted()
-            onUpdateProgress(0)
+            onUpdateProgress(DEFAULT_INDEX.toLong())
         }
     }
 
@@ -213,18 +214,18 @@ class ReelPlayer(
         })
     }
 
-    fun setData(reels: List<ReelsData>) {
+    fun setData(reels: List<String>) {
         if (reels.isNotEmpty()) {
             progressBarContainer.removeAllViews()
-            reels.mapIndexedTo(internalReels) { index, reel ->
+            reels.mapIndexedTo(internalReels) { index, url ->
 
                 // add progress bar to container and set max to duration (millis)
                 val progressBar = LayoutInflater.from(progressBarContainer.context)
                     .inflate(R.layout.progress_bar_item, progressBarContainer, false) as ProgressBar
-                progressBar.max = reel.duration.toInt()
+                //progressBar.max = reel.duration.toInt()
                 progressBarContainer.addView(progressBar)
 
-                Reels(reel.url, reel.duration, progressBar, index)
+                Reels(url = url, progressBar = progressBar, index = index)
             }
             showReel(0)
             onUpdateProgress(0)
@@ -238,11 +239,16 @@ class ReelPlayer(
         player.prepare()
     }
 
+    companion object {
+        const val DEFAULT_INDEX = 0
+        const val PAUSE_DELAY = 150L
+        const val PROGRESS_DELAY = 50L
+    }
 }
 
 data class Reels(
     var url: String,
-    var duration: Long,
+    var duration: Long = 0,
     var progressBar: ProgressBar,
     var index: Int
 ) {
@@ -257,5 +263,10 @@ data class Reels(
 
     fun setProgress(progress: Long) {
         progressBar.progress = progress.toInt()
+    }
+
+    fun setMaxDuration(duration:Long) {
+        progressBar.max = duration.toInt()
+        this.duration = duration
     }
 }
