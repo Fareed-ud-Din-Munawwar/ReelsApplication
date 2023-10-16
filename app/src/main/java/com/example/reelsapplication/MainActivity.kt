@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import com.example.reelsapplication.reels.ReelActivity
+import com.example.reelsapplication.reels.ShortsActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
                 "https://user-images.githubusercontent.com/90382113/170885742-d82e3b59-e45a-4fcf-a851-fed58ff5a690.mp4",
             )
 
-            val intent = Intent(this,ReelActivity::class.java)
+            val intent = Intent(this,ShortsActivity::class.java)
             intent.putStringArrayListExtra("data",reels)
             startActivity(intent)
         }

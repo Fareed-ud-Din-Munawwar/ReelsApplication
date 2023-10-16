@@ -1,42 +1,40 @@
 package com.example.reelsapplication.reels
 
 import android.graphics.Color
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.ProgressBar
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.children
 import com.example.reelsapplication.R
-import com.example.reelsapplication.ReelPlayer
+import com.example.reelsapplication.StoriesPlayer
 import com.example.reelsapplication.customize
 import com.example.reelsapplication.dp
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 
-class ReelActivity : AppCompatActivity() {
+class ShortsActivity : AppCompatActivity() {
 
     private lateinit var player: SimpleExoPlayer
     private lateinit var playerView: PlayerView
-    private lateinit var segmentedVideoPlayer: ReelPlayer
+    private lateinit var segmentedVideoPlayer: StoriesPlayer
     private lateinit var progressContainer: LinearLayoutCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reel)
+        setContentView(R.layout.activity_shorts)
 
-        val reels = intent.getStringArrayListExtra("data") ?: emptyList()
+        val stories = intent.getStringArrayListExtra("data") ?: emptyList()
 
         progressContainer = findViewById(R.id.progress_container)
         playerView = findViewById(R.id.player_view)
 
         player = SimpleExoPlayer.Builder(this).build()
-        segmentedVideoPlayer = ReelPlayer(player, playerView, progressContainer, autoPlay = true)
+        segmentedVideoPlayer = StoriesPlayer(player, playerView, progressContainer, autoPlay = true)
         updateProgress()
 
-        segmentedVideoPlayer.setData(reels)
+        segmentedVideoPlayer.setData(stories)
 
         segmentedVideoPlayer.closeObserver.observe(this){
             if (it)

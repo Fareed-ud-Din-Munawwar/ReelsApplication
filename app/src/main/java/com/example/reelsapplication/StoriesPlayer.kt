@@ -18,7 +18,7 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 
 
-class ReelPlayer(
+class StoriesPlayer(
     private val player: SimpleExoPlayer,
     private val playerView: PlayerView,
     private val progressBarContainer: LinearLayoutCompat,
@@ -30,8 +30,8 @@ class ReelPlayer(
 
 
     private val dataSourceFactory: DataSource.Factory
-    private val internalReels = mutableListOf<Reels>()
-    private var reelIndex = DEFAULT_INDEX
+    private val internalStories = mutableListOf<Stories>()
+    private var storiesIndex = DEFAULT_INDEX
 
     private val delayedPauseRunnable = Runnable { pause() }
 
@@ -116,12 +116,12 @@ class ReelPlayer(
     }
 
     private fun onUpdateProgress(position: Long) {
-        if (reelIndex >= internalReels.size) {
+        if (storiesIndex >= internalStories.size) {
             playbackEnd()
             return
         }
 
-        val segment = internalReels[reelIndex]
+        val segment = internalStories[storiesIndex]
 
         if (position == DEFAULT_INDEX.toLong())
             segment.setMaxDuration(player.duration)
@@ -141,11 +141,11 @@ class ReelPlayer(
 
     private fun forward() {
         //play next segment or close if last played
-        if (reelIndex < internalReels.size) {
-            internalReels[reelIndex].completed()
+        if (storiesIndex < internalStories.size) {
+            internalStories[storiesIndex].completed()
         }
-        if (++reelIndex < internalReels.size) {
-            showReel(reelIndex)
+        if (++storiesIndex < internalStories.size) {
+            showStory(storiesIndex)
             onUpdateProgress(0)
         }
         else{
@@ -155,15 +155,15 @@ class ReelPlayer(
 
     private fun rewind() {
         //play previous segment or repeat first segment
-        internalReels[reelIndex].notStarted()
-        if (reelIndex > DEFAULT_INDEX) {
-            showReel(--reelIndex)
-            internalReels[reelIndex].notStarted()
+        internalStories[storiesIndex].notStarted()
+        if (storiesIndex > DEFAULT_INDEX) {
+            showStory(--storiesIndex)
+            internalStories[storiesIndex].notStarted()
             onUpdateProgress(DEFAULT_INDEX.toLong())
         }
-        else if (reelIndex == DEFAULT_INDEX){
-            showReel(reelIndex)
-            internalReels[reelIndex].notStarted()
+        else if (storiesIndex == DEFAULT_INDEX){
+            showStory(storiesIndex)
+            internalStories[storiesIndex].notStarted()
             onUpdateProgress(DEFAULT_INDEX.toLong())
         }
     }
@@ -213,28 +213,28 @@ class ReelPlayer(
         })
     }
 
-    fun setData(reels: List<String>) {
-        if (reels.isNotEmpty()) {
+    fun setData(stories: List<String>) {
+        if (stories.isNotEmpty()) {
             progressBarContainer.removeAllViews()
-            reels.mapIndexedTo(internalReels) { index, url ->
+            stories.mapIndexedTo(internalStories) { index, url ->
 
                 // add progress bar to container and set max to duration (millis)
                 val progressBar = LayoutInflater.from(progressBarContainer.context)
                     .inflate(R.layout.progress_bar_item, progressBarContainer, false) as ProgressBar
-                //progressBar.max = reel.duration.toInt()
+                //progressBar.max = story.duration.toInt()
                 progressBarContainer.addView(progressBar)
 
-                Reels(url = url, progressBar = progressBar, index = index)
+                Stories(url = url, progressBar = progressBar, index = index)
             }
-            showReel(0)
+            showStory(0)
             onUpdateProgress(0)
         }
         else
             release()
     }
 
-    private fun showReel(index: Int) {
-        player.setMediaSource(createProgressiveMediaSource(internalReels[index].url))
+    private fun showStory(index: Int) {
+        player.setMediaSource(createProgressiveMediaSource(internalStories[index].url))
         player.prepare()
     }
 
@@ -245,7 +245,7 @@ class ReelPlayer(
     }
 }
 
-data class Reels(
+data class Stories(
     var url: String,
     var duration: Long = 0,
     var progressBar: ProgressBar,
